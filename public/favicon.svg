@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TI">
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#0067B8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular motion mark -->
+  <path d="M10.5 43.5A25 25 0 1 1 51.5 20"
+        fill="none" stroke="#062B63" stroke-width="5.2"
+        stroke-linecap="round"/>
+  <path d="M52.2 20.8A25 25 0 0 1 18.2 53"
+        fill="none" stroke="url(#blue)" stroke-width="5.2"
+        stroke-linecap="round"/>
+
+  <!-- TI monogram -->
+  <path d="M18 20h25l-2.2 6.2h-8.1L28 45h-7.2l4.7-18.8h-9.7z"
+        fill="#062B63"/>
+  <path d="M36.8 26.2h7.2L39.3 45h-7.2z"
+        fill="url(#blue)"/>
+</svg>
