@@ -1,52 +1,35 @@
 import React from 'react';
-import { Button } from 'antd';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { type User } from '../../auth/auth.interface'; // Adjust path to your User interface/type
+import logo from './gemini-svg.svg'; // ReactComponent via vite-plugin-svgr
+import {type User} from '../../auth/auth.interface';
+import {useAuth} from '../../hooks/use-auth';
+import {DropdownUser} from '../user';
 import './header.scss';
 
-// 1. Define the props interface
 export interface HeaderProps {
-    isAuthenticated: boolean;
+    isAuthenticated?: boolean;
     user?: User | null;
 }
 
-// 2. Pass HeaderProps to the component
-export const Header: React.FC<HeaderProps> = ({ isAuthenticated, user }) => {
-    const handleLogout = () => {
-        // TODO: integrate with SSO logout
-    };
+export const Header: React.FC<HeaderProps> = ({isAuthenticated, user}) => {
+    const auth = useAuth();
 
-    const handleLogin = () => {
-        // TODO: integrate with SSO login / redirect
-    };
+    // Use passed props if available, otherwise fallback to useAuth hook
+    const isUserAuth = isAuthenticated ?? Boolean(auth?.userProfile);
+    const currentUser = user !== undefined ? user : auth?.userProfile;
 
     return (
         <header className="app-header">
             <div className="app-header__brand">
+                <div className="app-header__logo">
+                    <img src={logo} alt="TI Logo" />
+                </div>
                 <span className="app-header__title">
                     TI Knowledge Platform
                 </span>
             </div>
 
             <div className="app-header__actions">
-                {isAuthenticated ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span>
-                            <UserOutlined /> {user?.given_name || user?.family_name || 'User'}
-                        </span>
-                        <Button
-                            type="text"
-                            icon={<LogoutOutlined />}
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </Button>
-                    </div>
-                ) : (
-                    <Button type="primary" onClick={handleLogin}>
-                        Sign in
-                    </Button>
-                )}
+                <DropdownUser isAuthenticated={isUserAuth} user={currentUser}/>
             </div>
         </header>
     );

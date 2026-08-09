@@ -1,4 +1,4 @@
-import Logo from './assets/ti-logo.svg';
+import Logo from './ti-logo.svg';
 import { login } from '../../utils/user-util';
 import './header.scss';
 
