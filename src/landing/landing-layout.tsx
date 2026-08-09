@@ -9,7 +9,6 @@ import './landing.scss';
 
 export const LandingLayout = () => {
 
-
     return (
         <div className="app-layout">
             <Interceptor/>

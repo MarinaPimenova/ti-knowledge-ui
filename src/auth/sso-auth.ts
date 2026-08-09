@@ -40,7 +40,7 @@ export const ssoAuthProvider = {
                 data = {data: undefined, error: {message: errorMessage}};
                 // @ts-ignore
                 if (error !== undefined && (error.message === 'Network Error')) {
-                    reset();
+                    resetToDashboard(); //reset();
                 }
                 // @ts-ignore
                 if (error !== undefined && (error.response?.status === 401 || error.response?.status === 403)) {
@@ -93,6 +93,11 @@ export function getServerUrl(cname: string): string {
 
 export function reset() {
     window.location.href = apiServerUrl + '/logout';
+}
+
+export function resetToDashboard() {
+    const frontendOrigin = `${window.location.protocol}//${window.location.host}`; // e.g. http://localhost:3000
+    window.location.href = `${frontendOrigin}/dashboard-page`;
 }
 
 export function refresh(event: React.MouseEvent<HTMLElement>) {

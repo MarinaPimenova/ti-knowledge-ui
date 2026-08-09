@@ -9,7 +9,12 @@ export default defineConfig({
     },
     plugins: [
         react(),
-        svgr(),
+        svgr({
+            svgrOptions: {
+                // Allows importing SVGs directly as React components
+                exportType: 'default',
+            },
+        }),
     ],
     base: '/dashboard-page',  // Set the base URL for the app
     optimizeDeps: {
@@ -24,7 +29,7 @@ export default defineConfig({
         preprocessorOptions: {
             scss: {
                 api: 'modern-compiler' // or "modern"
-            }
+            } as any,
         }
     }
 });

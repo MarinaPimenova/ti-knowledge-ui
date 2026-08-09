@@ -666,3 +666,132 @@ height: auto;
 - max-width: 80% prevents the illustration from overflowing on small screens.
 - height: auto preserves the PNG aspect ratio.
 - position: relative on .not-found is fine, although it isn't currently required by the JSX.
+
+---
+When the backend is down and a redirect to `http://localhost:8080/logout` happens, it usually means your OAuth2 / OIDC client library (or an Axios interceptor) is catching a network failure, assuming the user's session expired, and automatically executing a full-page browser redirect (`window.location.href = ...`).
+
+Because it is a hard browser redirect to an unavailable server, React is completely bypassed and cannot show your UI error page.
+
+---
+
+### Step 1: Catch Network Errors in Axios Interceptor
+
+To prevent auto-redirects when the backend is offline (e.g., `ERR_NETWORK` or `status === 0`), update your Axios response interceptor (`src/services/axios.config.ts`) to intercept network failures first and direct users to your `/error` page:
+
+```typescript
+// src/services/axios.config.ts
+import axios, { AxiosError } from 'axios';
+import { ROUTE } from '../router/router.enum';
+
+export const setupInterceptors = (navRef: React.MutableRefObject<any>, apiNotification: any) => {
+  axios.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      // 1. Check if backend is completely unavailable (Network Error / CORS fail / Refused connection)
+      if (error.code === 'ERR_NETWORK' || !error.response) {
+        console.error('Backend server is unreachable:', error);
+        
+        // Show an immediate notification
+        apiNotification.error({
+          message: 'Server Unreachable',
+          description: 'Unable to connect to the server. Please check your network or try again later.',
+        });
+
+        // Redirect safely within React Router rather than triggering a full-page logout redirect
+        if (navRef.current) {
+          navRef.current(ROUTE.ERROR);
+        }
+        return Promise.reject(error);
+      }
+
+      // 2. Handle HTTP 401 Unauthorized (Only redirect to login/logout if the server actually responded with 401)
+      if (error.response?.status === 401) {
+        if (navRef.current) {
+          navRef.current(ROUTE.RE_LOGIN);
+        }
+        return Promise.reject(error);
+      }
+
+      return Promise.reject(error);
+    }
+  );
+};
+
+```
+
+---
+
+### Step 2: Prevent Unhandled Rejections in `auth.onLogin()`
+
+If your `AuthContext` triggers a redirect (like Keycloak / OAuth2 `login()` or `logout()`), ensure you check backend health or wrap the authorization call so it fails gracefully:
+
+```tsx
+// Inside DropdownUser (components/user/index.tsx)
+const handleLoginClick = async () => {
+    if (isNull(auth)) return;
+
+    setIsLoading(true);
+    try {
+        await auth.onLogin();
+    } catch (error: any) {
+        console.error('Login failed due to backend availability:', error);
+        
+        // Redirect to your dedicated network error page
+        navigate(ROUTE.ERROR);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+```
+
+---
+
+### Step 3: Enhance Your `BaseNetworkError` Page (`/error`)
+
+Ensure your `BaseNetworkError` component displays a clear "Server Unreachable" message with a "Retry" button:
+
+```tsx
+// src/error/network.tsx
+import React from 'react';
+import { Button, Result } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from '../router/router.enum';
+
+export const BaseNetworkError: React.FC = () => {
+    const navigate = useNavigate();
+
+    return (
+        <div style={{ padding: '48px 0' }}>
+            <Result
+                status="500"
+                title="Service Unavailable"
+                subTitle="Sorry, the server is currently unreachable. Please check your network connection or try again later."
+                extra={
+                    <Button type="primary" onClick={() => navigate(ROUTE.ROOT)}>
+                        Try Again
+                    </Button>
+                }
+            />
+        </div>
+    );
+};
+
+```
+
+### Key Takeaway
+
+Checking `!error.response` or `error.code === 'ERR_NETWORK'` inside your Axios interceptor stops the app from triggering a hard browser navigation to `localhost:8080/logout` when the backend is offline, keeping the user safely inside your React application where a helpful error screen can be rendered.
+
+---
+What Was Fixed
+
+    Network Failures No Longer Trigger Relogin:
+    Previously, error.code === 'ERR_NETWORK' caused navRef.current(ROUTE.RE_LOGIN). If the backend was down, hitting /relogin tried to perform an auth check against an offline backend, causing the app to crash or redirect to http://localhost:8080/logout. Now, it notifies the user and routes them to ROUTE.ERROR.
+
+    Safe Optional Chaining (?.):
+    error.response.data.errorMessage previously crashed with a JavaScript TypeError if error.response or error.response.data was undefined. Using error.response?.data?.errorMessage avoids this runtime crash.
+
+    Cleaner Error Routing:
+    Replaced ' /page/error' + '/' + error.code with your defined router enum (${ROUTE.ERROR}/${errorCode}).
+
