@@ -1,0 +1,16 @@
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.not-found {
+  flex: 1;
+  position: relative;
+}
+
+.not-found-img {
+  width: 280px;
+  max-width: 80%;
+  height: auto;
+}
