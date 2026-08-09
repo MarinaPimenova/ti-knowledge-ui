@@ -34,21 +34,23 @@ export const DropdownUser: React.FC<DropdownUserProps> = ({ isAuthenticated, use
     const handleLoginClick = async () => {
         if (isNull(auth)) return;
 
-        // 1. Disable button during login attempt
+        // 1. Immediately disable the button & set spinner
         setIsLoading(true);
 
         try {
-            await auth.onLogin();
-            // Clear any previous banner on success
+            // Clear any old error banners
             setNetworkError(false);
-            navigate(ROUTE.ROOT);
+
+            // 2. Trigger login / auth request
+            await auth.onLogin();
+
+            // NOTE: Do NOT call setIsLoading(false) here.
+            // The browser is now redirecting to Okta / SSO.
         } catch (error) {
             console.error('Login or network error:', error);
 
-            // 2. Trigger header network error banner
+            // 3. ONLY if an error occurred, show banner and re-enable button
             setNetworkError(true);
-        } finally {
-            // 3. Re-enable button immediately so user can retry
             setIsLoading(false);
         }
     };
@@ -68,10 +70,10 @@ export const DropdownUser: React.FC<DropdownUserProps> = ({ isAuthenticated, use
                 type="primary"
                 icon={<LoginOutlined />}
                 loading={isLoading}
-                disabled={isLoading} // Button is disabled while attempting login
+                disabled={isLoading} // Will remain disabled while browser redirects
                 onClick={handleLoginClick}
             >
-                {isLoading ? 'Signing in...' : 'Login'}
+                {isLoading ? 'Connecting...' : 'Login'}
             </Button>
         );
     }
