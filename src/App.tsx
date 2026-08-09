@@ -1,12 +1,16 @@
 import './App.css'
+import AuthProvider from "./auth/auth-provider.tsx";
+import {Routes} from "./router/router.tsx";
 
 function App() {
 
-  return (
-    <>
-      <p>Under construction</p>
-    </>
-  )
+    return (
+        <>
+            <AuthProvider>
+                <Routes/>
+            </AuthProvider>
+        </>
+    )
 }
 
-export default App
+export default App;

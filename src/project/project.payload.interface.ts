@@ -1,16 +1,12 @@
-export interface IQuestionPayload {
-    question: string;
-    shortAnswer: string;
-    resourceUrl: string;
-    description: string; // resource's description
+export interface IProjectPayload {
+    name: string;
+    lead: string;
 }
 
-export interface IQuestion {
+export interface IProject {
     id: bigint;
-    question: string;
-    shortAnswer: string;
+    name: string;
+    lead: string;
     tag: string;
-    projectName: string;
-    resourceUrl: string;
-    description: string; // resource's description
+    questionsCount: bigint;
 }

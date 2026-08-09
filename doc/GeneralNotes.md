@@ -202,9 +202,11 @@ icon.svg — larger version for use inside the React application.
 ## Packages
 
 ```shell
-npm install axios lodash antd @ant-design/icons react-router-dom react-error-boundary
+npm install axios lodash antd @ant-design/icons react-router-dom react-error-boundary zustand
 
 npm install -D @types/lodash
+
+npm install -D sass-embedded
 ```
 
 devDependencies are missing vitest and jsdom (which you set as your test environment). Install them to prevent runtime errors:
@@ -212,6 +214,10 @@ devDependencies are missing vitest and jsdom (which you set as your test environ
 ```shell
 npm install -D vitest jsdom
 ```
+For Vite, install SVGR:
 
+```shell
+npm install -D vite-plugin-svgr
+```
 
 

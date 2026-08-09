@@ -4,9 +4,9 @@
 /// <reference types="vitest/globals" />
 
 import '@testing-library/jest-dom';
-import { cleanup } from '@testing-library/react';
+import {cleanup} from '@testing-library/react';
 
-const { getComputedStyle } = window;
+const {getComputedStyle} = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
 
 vi.mock('zustand'); // to make it works like Jest (auto-mocking)
@@ -25,7 +25,8 @@ const ResizeObserverMock = vi.fn(() => ({
 }));
 
 // Mock scrollTo
-const scrollToMock = vi.fn(() => {});
+const scrollToMock = vi.fn(() => {
+});
 
 // Stub the global ResizeObserver
 vi.stubGlobal('ResizeObserver', ResizeObserverMock);

@@ -1,81 +1,91 @@
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import {ROUTE} from './router.enum';
-import {ErrorPage} from '../error';
-import {BaseNetworkError} from '../error/network';
-import {LandingLayout} from '../landing/landing-layout';
-import {ReLogin} from '../error/relogin/index';
-import {PublicLayout} from '../landing/public-layout';
-import {Question} from '../question/index';
-import {Project} from '../project/index';
-import type {ErrorInfo} from 'react';
+// router.tsx
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom';
+import { ROUTE } from './router.enum';
+import { ErrorPage } from '../error';
+import { BaseNetworkError } from '../error/network';
+import { LandingLayout } from '../landing/landing-layout';
+import { ReLogin } from '../error/relogin';
+import { PublicLayout } from '../landing/public-layout';
+import { Question } from '../question';
+import { QuestionCreate } from '../question/question-create';
+import { Project } from '../project';
+import { ExportPage } from '../export';
+import { Dashboard } from '../dashboard';
+import { useAuth } from '../hooks/use-auth';
+import { isNull } from '../services/utils.service';
+import { ErrorBoundary } from 'react-error-boundary';
 import Fallback from '../error/fallback';
-import {ErrorBoundary} from 'react-error-boundary';
-import {QuestionCreate} from '../question/question-create';
+import type { ErrorInfo } from 'react';
+import {ProjectCreate} from "../project/project-create.tsx";
+
+// Guard component for protected routes
+const ProtectedRoute = () => {
+    const auth = useAuth();
+    if (isNull(auth?.userProfile)) {
+        return <Navigate to={ROUTE.RE_LOGIN} replace />;
+    }
+    return <Outlet />;
+};
 
 export const Routes = () => {
-    // Define routes accessible only to authenticated users
-    const authenticatedRoutes = [
+    const router = createBrowserRouter(
+        [
+            {
+                path: ROUTE.ROOT,
+                element: <LandingLayout />,
+                errorElement: <ErrorPage />,
+                children: [
+                    { index: true, element: <Dashboard /> },
+                    {
+                        element: <ProtectedRoute />,
+                        children: [
+                            { path: ROUTE.QUESTIONS, element: <Question /> },
+                            { path: ROUTE.CREATE_QUESTION, element: <QuestionCreate /> },
+                            { path: ROUTE.PROJECTS, element: <Project /> },
+                            // Inside router.tsx protected routes children:
+                            { path: ROUTE.CREATE_PROJECT, element: <ProjectCreate /> },
+                            { path: ROUTE.EXPORT, element: <ExportPage /> },
+                        ],
+                    },
+                ],
+            },
+            {
+                path: ROUTE.RE_LOGIN,
+                element: <PublicLayout />,
+                errorElement: <ErrorPage />,
+                children: [{ index: true, element: <ReLogin /> }],
+            },
+            {
+                path: ROUTE.ERROR,
+                element: <PublicLayout />,
+                errorElement: <ErrorPage />,
+                children: [
+                    { index: true, element: <BaseNetworkError /> },
+                    { path: ROUTE.ERROR_CODE, element: <BaseNetworkError /> },
+                ],
+            },
+        ],
         {
-            path: ROUTE.ROOT,
-            element: <LandingLayout/>, // Wrap the component in Protected LandingLayout
-            errorElement: <ErrorPage/>,
-            children: [
-                {path: ROUTE.QUESTIONS, element: <Question/>},
-                {path: ROUTE.PROJECTS, element: <Project/>},
-            ],
-        },
-    ];
-
-    // Define routes accessible only to non-authenticated users
-    const publicRoutes = [
-        {
-            path: ROUTE.RE_LOGIN,
-            element: <PublicLayout/>, // Wrap the component in Protected LandingLayout
-            errorElement: <ErrorPage/>,
-            children: [{path: ROUTE.RE_LOGIN, element: <ReLogin/>}],
-        },
-    ];
-
-    const recoverRoutes = [
-        {
-            path: ROUTE.ERROR,
-            element: <PublicLayout/>, // Wrap the component in Public PublicLayout
-            errorElement: <ErrorPage/>,
-            children: [
-                {path: ROUTE.ERROR, element: <BaseNetworkError/>},
-                {path: ROUTE.ERROR_CODE, element: <BaseNetworkError/>}],
-        },
-    ];
-    // Combine and conditionally include routes based on authentication status
-    const router = createBrowserRouter([...publicRoutes, ...authenticatedRoutes, ...recoverRoutes], {
-        basename: '/dashboard-page',
-        future: {
-            v7_relativeSplatPath: true,
-        },
-    });
+            basename: '/dashboard-page',
+            future: {
+                v7_relativeSplatPath: true,
+                v7_startTransition: true, // Moved here from <RouterProvider />
+            },
+        }
+    );
 
     return (
         <ErrorBoundary
             FallbackComponent={Fallback}
-            onReset={() => {
-                /* reset the state of your app here*/
-            }}
-            resetKeys={['someKey']}
+            onReset={() => {}}
             onError={logErrorToService}
         >
-            <RouterProvider
-                router={router}
-                future={{
-                    v7_startTransition: true,
-                }}
-            />
+            <RouterProvider router={router} />
         </ErrorBoundary>
     );
 };
 
-// Error logging function
-function logErrorToService(error: Error, info: ErrorInfo) {
-    // Use your preferred error logging service
+// Updated 'error' type from Error to unknown
+function logErrorToService(error: unknown, info: ErrorInfo) {
     console.error('Caught an error:', error, info);
 }
-

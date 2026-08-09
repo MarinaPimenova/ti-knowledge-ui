@@ -1,16 +1,15 @@
+// router.enum.ts
 export const ROUTE = {
     ROOT: '/',
-    DASHBOARD: '/dashboard-page',
     QUESTIONS: '/questions',
-    CREATE_QUESTION: '/question',
+    CREATE_QUESTION: '/questions/create',
     PROJECTS: '/projects',
-    CREATE_PROJECT: '/project',
-    IMPORT: '/import',
+    CREATE_PROJECT: '/projects/create',
+    EXPORT: '/export',
     ADMIN: '/admin',
     ERROR: '/error',
     ERROR_CODE: '/error/:code',
-    RE_LOGIN: '/relogin'
-
+    RE_LOGIN: '/relogin',
 } as const;
 
-export type Route = typeof ROUTE[keyof typeof ROUTE];
+export type Route = (typeof ROUTE)[keyof typeof ROUTE];

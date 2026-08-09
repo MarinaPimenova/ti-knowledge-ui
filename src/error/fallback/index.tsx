@@ -1,17 +1,15 @@
-type resetErrorBoundaryType = (...args: any[]) => void;
+import type { FallbackProps } from 'react-error-boundary';
 
-type Props = {
-    error: Error;
-    resetErrorBoundary: resetErrorBoundaryType;
-};
+function Fallback({ error, resetErrorBoundary }: FallbackProps) {
+    // Safely extract message regardless of what was thrown
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
-function Fallback({ error, resetErrorBoundary }: Readonly<Props>) {
     return (
-        <>
-            <div className="section1">Fallback to RWDEx</div>
-            <p>Something went wrong: {error.message}</p>
+        <div className="error-fallback">
+            <div className="section1">Fallback to TI</div>
+            <p>Something went wrong: {errorMessage}</p>
             <button onClick={resetErrorBoundary}>Try again</button>
-        </>
+        </div>
     );
 }
 

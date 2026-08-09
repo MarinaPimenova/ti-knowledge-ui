@@ -2,7 +2,46 @@ Yes. Given the database model and the planned evolution of the platform, I would
 
 The main goal should be: **after login, the user immediately sees useful knowledge and can quickly find or manage it.**
 
-## 1. Recommended landing-page concept
+## Landing-page concept for not logged-in users
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│ TI Knowledge Platform                              👤 Sig in ▾      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Knowledge Dashboard                                                │
+│  Find, review and manage internal technical knowledge               │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ 🔍 Search questions and short answers...                      │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                     │
+│   💬 Ask AI    ⬆ Import    ⬇ Export    New Question                 │
+│                                                                     │
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────────────┐   │
+│  │    Projects    │ │ Questions      │ │ Knowledge Base         │   │
+│  │      4         │ │      37        │ │       248              │   │
+│  └────────────────┘ └────────────────┘ └────────────────────────┘   │
+│                                                                     │
+│  Recently Added Questions                                           │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ What is a Java Record?                                        │  │
+│  │ Java • A2 • Updated today                                     │  │
+│  │ "A record is a compact syntax for declaring..."               │  │
+│  ├───────────────────────────────────────────────────────────────┤  │
+│  │ Explain OAuth2 Authorization Code Flow                        │  │
+│  │ Security • A3 • Updated yesterday                             │  │
+│  │ "Authorization Code Flow allows..."                           │  │
+│  ├───────────────────────────────────────────────────────────────┤  │
+│  │ Explain the Circuit Breaker pattern                           │  │
+│  │ Resilience • A4 • Updated 2 days ago                          │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+
+## Recommended landing-page concept after log-in
 
 I would structure it like this:
 
@@ -12,18 +51,18 @@ I would structure it like this:
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  Knowledge Dashboard                                                │
-│  Find, review and manage internal technical knowledge              │
+│  Find, review and manage internal technical knowledge               │
 │                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
 │  │ 🔍 Search questions and short answers...              [Search]│  │
 │  └───────────────────────────────────────────────────────────────┘  │
 │                                                                     │
-│  [ 💬 Ask AI ]   [ ⬆ Import ]   [ ⬇ Export ]   [ + New Question ]  │
+│  [ 💬 Ask AI ]   [ ⬆ Import ]   [ ⬇ Export ]   [ + New Question ]   │
 │                                                                     │
-│  ┌────────────────┐ ┌────────────────┐ ┌────────────────────────┐  │
-│  │ My Projects    │ │ My Questions   │ │ Knowledge Base          │  │
-│  │      4         │ │      37        │ │       248               │  │
-│  └────────────────┘ └────────────────┘ └────────────────────────┘  │
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────────────┐   │
+│  │ My Projects    │ │ My Questions   │ │ Knowledge Base         │   │
+│  │      4         │ │      37        │ │       248              │   │
+│  └────────────────┘ └────────────────┘ └────────────────────────┘   │
 │                                                                     │
 │  My Projects                                      [View all]        │
 │  ┌───────────────────────────────────────────────────────────────┐  │
@@ -32,20 +71,34 @@ I would structure it like this:
 │  │ Architecture                                     18 questions │  │
 │  └───────────────────────────────────────────────────────────────┘  │
 │                                                                     │
-│  Recently Added Questions                          [View all]        │
+│  Recently Added Questions                          [View all]       │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │ What is a Java Record?                                      │  │
-│  │ Java • A2 • Updated today                                  │  │
-│  │ "A record is a compact syntax for declaring..."             │  │
+│  │ What is a Java Record?                                        │  │
+│  │ Java • A2 • Updated today                                     │  │
+│  │ "A record is a compact syntax for declaring..."               │  │
 │  ├───────────────────────────────────────────────────────────────┤  │
-│  │ Explain OAuth2 Authorization Code Flow                      │  │
-│  │ Security • A3 • Updated yesterday                           │  │
-│  │ "Authorization Code Flow allows..."                         │  │
+│  │ Explain OAuth2 Authorization Code Flow                        │  │
+│  │ Security • A3 • Updated yesterday                             │  │
+│  │ "Authorization Code Flow allows..."                           │  │
 │  ├───────────────────────────────────────────────────────────────┤  │
-│  │ Explain the Circuit Breaker pattern                         │  │
-│  │ Resilience • A4 • Updated 2 days ago                        │  │
+│  │ Explain the Circuit Breaker pattern                           │  │
+│  │ Resilience • A4 • Updated 2 days ago                          │  │
 │  └───────────────────────────────────────────────────────────────┘  │
 │                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+## Export layout
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│ <TI Logo> TI Knowledge Platform                    👤 User ▾        │
+├─────────────────────────────────────────────────────────────────────┤
+│  Export                                                             │
+|                                                                     |
+|  -Select or Find project to export                                  |
+|  -Select or Find questions to export                                |
+|                                                                     |
+|_____________________________________________________________________|
+│Footer                                                               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -1,0 +1,22 @@
+.error__content {
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+
+  img {
+    width: 280px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .error__description {
+    margin: 0 0 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .login {
+    min-width: 120px;
+  }
+}

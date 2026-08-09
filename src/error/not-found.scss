@@ -1,15 +1,16 @@
 .error-page {
-  height: calc(100vh);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.not-found {
+  flex: 1;
   position: relative;
 }
 
 .not-found-img {
   width: 280px;
-}
-
-.not-found {
-  flex: auto;
-  position: relative;
+  max-width: 80%;
+  height: auto;
 }

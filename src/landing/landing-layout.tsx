@@ -1,47 +1,28 @@
-import {useLayoutEffect} from 'react';
-import {Header} from '../components/header';
-import {Interceptor} from '../components/interceptor';
-import {Outlet, useNavigate} from 'react-router-dom';
-import {Footer} from '../components/footer/index';
-import type {AuthContextType} from '../auth/auth.interface';
-import {useAuth} from '../hooks/use-auth';
-import {isNull} from '../services/utils.service';
-import {ScrollToTop} from '../components/scroll-to-top';
-import {ROUTE} from '../router/router.enum';
+// landing-layout.tsx
+import { Outlet } from 'react-router-dom';
+import { Header } from '../components/header';
+import { Footer } from '../components/footer';
+import { Interceptor } from '../components/interceptor';
+import { ScrollToTop } from '../components/scroll-to-top';
+import { useAuth } from '../hooks/use-auth';
+import { isNull } from '../services/utils.service';
 import './landing.scss';
 
 export const LandingLayout = () => {
-    const navigate = useNavigate();
-    const auth: undefined | AuthContextType = useAuth();
-    useLayoutEffect(() => {
-        if (!isNull(auth)) {
-            auth?.onLogin();
-        }
-    }, []);
+    const auth = useAuth();
+    const isAuthenticated = !isNull(auth?.userProfile);
 
-    // Redirect after authentication success
-    useLayoutEffect(() => {
-        if (!isNull(auth?.userProfile)) {
-            navigate(ROUTE.DASHBOARD);
-        }
-    }, [auth?.userProfile]);
-
-    let content = <></>;
-
-    if (!isNull(auth?.userProfile)) {
-        content = (<>
-                <Interceptor/>
-                <ScrollToTop/>
-                <Header/>
-                <div className="container">
-                    <div className="content">
-                        <Outlet/>
-                    </div>
-                    <Footer/>
+    return (
+        <div className="app-layout">
+            <Interceptor />
+            <ScrollToTop />
+            <Header isAuthenticated={isAuthenticated} user={auth?.userProfile} />
+            <main className="container">
+                <div className="content">
+                    <Outlet />
                 </div>
-            </>
-        );
-    }
-
-    return (<>{content}</>);
+            </main>
+            <Footer />
+        </div>
+    );
 };
