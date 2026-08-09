@@ -1,0 +1,26 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 64px;
+  padding: 0 2rem;
+
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+  }
+}

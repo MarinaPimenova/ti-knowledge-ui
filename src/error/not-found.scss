@@ -1,0 +1,15 @@
+.error-page {
+  height: calc(100vh);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.not-found-img {
+  width: 280px;
+}
+
+.not-found {
+  flex: auto;
+  position: relative;
+}
