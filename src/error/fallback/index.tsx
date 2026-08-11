@@ -7,7 +7,8 @@ function Fallback({ error, resetErrorBoundary }: FallbackProps) {
     return (
         <div className="error-fallback">
             <div className="section1">Fallback to TI</div>
-            <p>Something went wrong: {errorMessage}</p>
+
+            <p>Fallback: Something went wrong: {errorMessage}</p>
             <button onClick={resetErrorBoundary}>Try again</button>
         </div>
     );

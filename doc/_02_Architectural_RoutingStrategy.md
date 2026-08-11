@@ -1,21 +1,17 @@
-To align your application routes and component architecture 
-with these requirements, 
-we need to restructure **Route handling**, **Layout composition**, 
-and **Dashboard presentation logic**.
-
----
-
 ## 1. Architectural & Routing Strategy
 
 ### The Core Problem
 
 Previously, non-authenticated users were immediately blocked 
 or redirected away from the dashboard (`ROUTE.ROOT`). 
-However, your public landing requirements demand that **both public and authenticated users view the Dashboard on the root route (`/`)**, with feature sets conditionally toggled depending on session state.
+However, your public landing requirements demand that **both public and authenticated users view the Dashboard on the root route (`/`)**, 
+with feature sets conditionally toggled depending on session state.
 
 ### The Solution Strategy
 
-1. **Unified Dashboard Route (`/`):** Place the Dashboard at `ROUTE.ROOT`. The Dashboard component will render public preview cards (no action buttons, no private projects) when logged out, and authenticated features (action controls, "My Projects", "View All" links) when logged in.
+1. **Unified Dashboard Route (`/`):** Place the Dashboard at `ROUTE.ROOT`. 
+The Dashboard component will render public preview cards (no action buttons, no private projects) when logged out, 
+and authenticated features (action controls, "My Projects", "View All" links) when logged in.
 2. **`ProtectedLayout` Guard:** Wrap explicit sub-features (`/questions`, `/projects`, `/question/create`, `/export`) in an authentication boundary. Unauthenticated users attempting to access these routes directly are routed to login/relogin.
 3. **Modal/Non-Blocking Features:**
 * **Import:** Operates via a Modal state on the dashboard (with a global background SSE progress notification bar).

@@ -5,18 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { ROUTE } from '../router/router.enum';
 import './question.scss';
+import type {QuestionRecord} from "./question.payload.interface";
 
 const { Text, Paragraph } = Typography;
-
-export interface QuestionRecord {
-    id: string;
-    question: string;
-    shortAnswer: string;
-    tag: string;
-    projectName: string;
-    resourceUrl?: string;
-    description?: string;
-}
 
 // Mock Data - Replace with your API fetch call/service hook
 const mockQuestions: QuestionRecord[] = [

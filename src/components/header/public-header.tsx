@@ -1,4 +1,4 @@
-import Logo from './gemini-svg.svg?react'; // React component import via vite-plugin-svgr
+import Logo from './ti-logo.svg?react'; // React component import via vite-plugin-svgr
 import { login } from '../../utils/user-util';
 import './header.scss';
 

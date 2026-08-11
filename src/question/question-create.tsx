@@ -3,19 +3,13 @@ import React from 'react';
 import { Form, Input, Button, Card, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '../router/router.enum';
-
-interface QuestionFormValues {
-    question: string;
-    shortAnswer: string;
-    resourceUrl?: string;
-    description?: string;
-}
+import type {QuestionPayload} from "./question.payload.interface";
 
 export const QuestionCreate: React.FC = () => {
-    const [form] = Form.useForm<QuestionFormValues>();
+    const [form] = Form.useForm<QuestionPayload>();
     const navigate = useNavigate();
 
-    const handleSubmit = (values: QuestionFormValues) => {
+    const handleSubmit = (values: QuestionPayload) => {
         // Business Validation: Ensure at least resourceUrl OR description is populated
         if (!values.resourceUrl?.trim() && !values.description?.trim()) {
             message.error('Either Resource URL or Description must be provided.');

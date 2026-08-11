@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert } from 'antd';
-import Logo from './gemini-svg.svg?react';
+import Logo from './ti-logo.svg?react';
 import { type User } from '../../auth/auth.interface';
 import { useAuth } from '../../hooks/use-auth';
 import { DropdownUser } from '../user';
