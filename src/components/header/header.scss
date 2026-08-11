@@ -5,7 +5,7 @@
   margin: 0;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid #ffccc7; // Matching Ant Design error border
+  border-bottom: 1px solid #ffccc7;
   width: 100%;
   z-index: 1000;
 }
@@ -25,7 +25,20 @@
   &__brand {
     display: flex;
     align-items: center;
-    gap: 0.75rem; // Space between logo and title
+    gap: 0.75rem;
+    text-decoration: none; // Removes link underline
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 0.85; // Subtle hover effect for the logo & title
+    }
+
+    &:focus-visible {
+      outline: 2px solid #0078d4;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
   }
 
   &__logo {
@@ -33,14 +46,12 @@
     align-items: center;
     justify-content: center;
 
-    // Direct image tag support
     img {
       height: 32px;
       width: auto;
       display: block;
     }
 
-    // Inline SVG component support
     &-svg {
       height: 32px;
       width: auto;

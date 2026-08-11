@@ -16,7 +16,6 @@ export const LandingLayout = () => {
             <Header/>
             <main className="container">
                 <div className="content">
-                    LandingLayout
                     <Outlet/>
                 </div>
             </main>
