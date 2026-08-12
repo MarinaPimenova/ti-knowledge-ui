@@ -95,3 +95,108 @@ return <>{contextHolder}</>;
 [ Render <>{contextHolder}</> ]  --> Mounts Ant Design Notification DOM Portal
 
 ```
+---
+Here is the complete step-by-step description of how interceptor works.
+
+---
+
+## 1. High-Level Algorithm Overview
+
+The `setupInterceptors` function binds response error handlers to both Axios instances (`landingPageApi` and `restApi`). 
+Its core logic runs on every HTTP response:
+
+```
+                          [ HTTP Response / Error ]
+                                     │
+                                     ▼
+                       Is there a Successful Response?
+                               /           \
+                           (Yes)           (No)
+                             /               \
+              Return response                 Extract `skipAuthRedirect` flag
+                                                             │
+                                                             ▼
+                                                Is `error.code === 'ERR_NETWORK'`
+                                                       OR `!error.response`?
+                                                      /                     \
+                                                  (Yes)                     (No)
+                                                   /                           \
+                                  Set Network Error State               Is Status 401 or 403?
+                                  Navigate to ROUTE.ERROR               /                   \
+                                  (if `!shouldSkipRedirect`)        (Yes)                   (No)
+                                                                     /                         \
+                                                       Navigate to RE_LOGIN               Trigger Notification
+                                                    (if `!shouldSkipRedirect`)            Navigate to ROUTE.ERROR/{code}
+                                                                                          (if `!shouldSkipRedirect`)
+
+```
+
+### Detailed Algorithm Steps:
+
+1. **Pass-through on Success:**
+   If the HTTP request succeeds (2xx response), the interceptor does nothing and returns `response`.
+2. **Extract Configuration Flag (`skipAuthRedirect`):**
+   If an error occurs, it inspects `error.config` to see if the calling code set `skipAuthRedirect: true`.
+3. **Branch 1 — Network / Infrastructure Failure:**
+   Checks if `error.code === 'ERR_NETWORK'` **OR** `!error.response` (no response object attached to the error).
+* Calls `useNetworkStore.getState().setNetworkError(true)` to trigger the global network alert banner.
+* If `shouldSkipAuthRedirect` is `false` (or not provided) and `navRef.current` exists, navigates the SPA to `ROUTE.ERROR`.
+* Otherwise, rejects the promise (`Promise.reject(error)`).
+
+
+4. **Branch 2 — Unauthenticated / Session Expiry (401 / 403):**
+   Checks if `error.response.status === 401` or `403`.
+* If `shouldSkipAuthRedirect` is `false` and `navRef.current` exists, logs the hit and redirects the router to `ROUTE.RE_LOGIN`.
+* Otherwise, rejects the promise without navigating.
+
+
+5. **Branch 3 — Application & API Errors (400, 500, etc.):**
+   Catches all other HTTP error statuses (e.g., 400 Bad Request, 500 Internal Server Error).
+* Extracts the server error message (`error.response.data?.errorMessage`) and displays an Ant Design notification pop-up via `openNotificationWithIcon`.
+* If `shouldSkipAuthRedirect` is `false` and `navRef.current` exists, navigates to `${ROUTE.ERROR}/${errorCode}` (e.g., `/error/ERR_BAD_REQUEST`).
+* Rejects the promise.
+
+
+
+---
+
+## 2. Analysis of Question
+
+> *"it looks like we can miss 401 or 403 because of condition: `if (error.code === 'ERR_NETWORK' || !error.response)`"*
+
+### Short Answer:
+
+**No, you will NOT miss true 401/403 responses because of this condition.** Here is why:
+
+### Why It Works Correctly:
+
+1. **How Axios Handles Responses:**
+   When the Gateway/Backend receives a request and responds with a `401 Unauthorized` or `403 Forbidden` HTTP status code:
+* **`error.response` is defined:** Axios creates an `error.response` object containing `{ status: 401, data: ..., headers: ... }`.
+* **`error.code` is NOT `'ERR_NETWORK'`:** `ERR_NETWORK` is a special Axios error code reserved strictly for cases where **no HTTP response was received at all** (e.g., DNS lookup failure, connection refused, CORS blocked before reaching server, offline client).
+
+
+2. **Evaluating the Condition:**
+   When a 401 or 403 occurs:
+```typescript
+if (error.code === 'ERR_NETWORK' || !error.response)
+//  false                    || false  ===> EVALUATES TO FALSE!
+
+```
+
+
+Because both sub-conditions evaluate to `false`, the code **skips Branch 1 completely** and drops directly into Branch 2:
+```typescript
+if (error.response.status === 401 || error.response.status === 403)
+//  true                          || false  ===> EVALUATES TO TRUE!
+
+```
+
+---
+
+### Important Edge Cases to Keep in Mind:
+
+* **CORS Preflight Failures on Auth Endpoints:**
+  If the Gateway throws a 401/403 during a CORS preflight (`OPTIONS` request) and browser policies block the response headers, the browser will report a network error (`!error.response`). In that scenario, it will enter Branch 1 instead of Branch 2. But that is standard browser security behavior—JavaScript cannot read the 401/403 status if CORS blocks the response header.
+* **Optional Chaining (`?.`) Safety:**
+  In Branch 2, `error.response.status` assumes `error.response` exists. Because Branch 1 explicitly guards against `!error.response`, `error.response` is guaranteed to exist when Branch 2 executes, making it safe from `TypeError: Cannot read properties of undefined (reading 'status')`.

@@ -37,7 +37,8 @@ export const DropdownUser: React.FC<DropdownUserProps> = ({isAuthenticated, user
         try {
             await restApi.get('/actuator/health', {
                 timeout: 3000,
-            });
+                skipAuthRedirect: true, // <--- Add this flag!
+            } as any);
             return true;
         } catch (error: any) {
             console.error('check be health failed - be is not available')
