@@ -1,44 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Tag, Input, Button, Card, Space, Tooltip, Typography } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Tag, Input, Button, Card, Space, Tooltip, Typography, message } from 'antd';
 import { SearchOutlined, LinkOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { ROUTE } from '../router/router.enum';
 import './question.scss';
-import type {QuestionRecord} from "./question.payload.interface";
+import type { QuestionRecord } from "./question.payload.interface";
+import { getQuestions } from "../services/api.service";
 
 const { Text, Paragraph } = Typography;
-
-// Mock Data - Replace with your API fetch call/service hook
-const mockQuestions: QuestionRecord[] = [
-    {
-        id: '1',
-        question: 'What is a Java Record?',
-        shortAnswer: 'A record is a compact syntax for declaring transparent data-carrier classes.',
-        tag: 'Java',
-        projectName: 'Java Training',
-        resourceUrl: 'https://docs.oracle.com/en/java/javase/17/language/records.html',
-        description: 'Records were introduced in Java 14 as a preview and finalized in Java 16. They acquire automatically generated constructor, getters, equals, hashCode, and toString methods.',
-    },
-    {
-        id: '2',
-        question: 'Explain OAuth2 Authorization Code Flow',
-        shortAnswer: 'Allows clients to obtain access tokens securely via authorization code exchange.',
-        tag: 'Security',
-        projectName: 'Architecture',
-        resourceUrl: 'https://oauth.net/2/grant-types/authorization-code/',
-        description: 'Best suited for confidential web applications. Utilizes front-channel user interaction and back-channel token exchange with PKCE enhancement for public clients.',
-    },
-    {
-        id: '3',
-        question: 'Explain the Circuit Breaker pattern',
-        shortAnswer: 'Prevents cascading failures by short-circuiting calls to failing remote services.',
-        tag: 'Resilience',
-        projectName: 'Spring Boot',
-        resourceUrl: 'https://resilience4j.readme.io/docs/circuitbreaker',
-        description: 'Monitors execution metrics and transitions between Closed, Open, and Half-Open states based on failure rate thresholds.',
-    },
-];
 
 export const Question: React.FC = () => {
     const navigate = useNavigate();
@@ -46,23 +16,30 @@ export const Question: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
 
-    useEffect(() => {
-        // Simulating data fetch
+    const getQuestionList = useCallback(async () => {
         setLoading(true);
-        setTimeout(() => {
-            setQuestions(mockQuestions);
+        try {
+            const response = await getQuestions();
+            setQuestions(response.data ?? []);
+        } catch (err: any) {
+            message.error(err?.message || 'Failed to load questions');
+        } finally {
             setLoading(false);
-        }, 300);
+        }
     }, []);
 
-    // Filter questions based on search query
+    useEffect(() => {
+        void getQuestionList();
+    }, [getQuestionList]);
+
+    // Safe filtering handling null/undefined fields
     const filteredData = questions.filter((item) => {
         const query = searchText.toLowerCase();
         return (
-            item.question.toLowerCase().includes(query) ||
-            item.shortAnswer.toLowerCase().includes(query) ||
-            item.tag.toLowerCase().includes(query) ||
-            item.projectName.toLowerCase().includes(query)
+            (item.question?.toLowerCase() ?? '').includes(query) ||
+            (item.shortAnswer?.toLowerCase() ?? '').includes(query) ||
+            (item.tag?.toLowerCase() ?? '').includes(query) ||
+            (item.projectName?.toLowerCase() ?? '').includes(query)
         );
     });
 
@@ -74,35 +51,41 @@ export const Question: React.FC = () => {
             width: '22%',
             render: (text: string) => (
                 <Text strong className="question-table__title">
-                    {text}
+                    {text || '—'}
                 </Text>
             ),
-            sorter: (a, b) => a.question.localeCompare(b.question),
+            sorter: (a, b) => (a.question ?? '').localeCompare(b.question ?? ''),
         },
         {
             title: 'Short Answer',
             dataIndex: 'shortAnswer',
             key: 'shortAnswer',
             width: '25%',
-            render: (text: string) => (
-                <Paragraph
-                    ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}
-                    className="question-table__short-answer"
-                >
-                    {text}
-                </Paragraph>
-            ),
+            render: (text?: string) =>
+                text ? (
+                    <Paragraph
+                        ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}
+                        className="question-table__short-answer"
+                    >
+                        {text}
+                    </Paragraph>
+                ) : (
+                    <Text type="secondary">—</Text>
+                ),
         },
         {
             title: 'Tag',
             dataIndex: 'tag',
             key: 'tag',
             width: '12%',
-            render: (tag: string) => (
-                <Tag color="blue" key={tag}>
-                    {tag.toUpperCase()}
-                </Tag>
-            ),
+            render: (tag?: string) =>
+                tag ? (
+                    <Tag color="blue" key={tag}>
+                        {tag.toUpperCase()}
+                    </Tag>
+                ) : (
+                    <Text type="secondary">—</Text>
+                ),
             filters: [
                 { text: 'Java', value: 'Java' },
                 { text: 'Security', value: 'Security' },
@@ -115,7 +98,8 @@ export const Question: React.FC = () => {
             dataIndex: 'projectName',
             key: 'projectName',
             width: '15%',
-            sorter: (a, b) => a.projectName.localeCompare(b.projectName),
+            render: (name?: string) => name || <Text type="secondary">—</Text>,
+            sorter: (a, b) => (a.projectName ?? '').localeCompare(b.projectName ?? ''),
         },
         {
             title: 'Resource URL',
