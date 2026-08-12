@@ -70,7 +70,7 @@ Browser               Gateway (Spring Security)                      Okta Identi
 4. **Callback Processing:** Upon successful login, Okta redirects back to `/login/oauth2/code/okta`. Spring Security:
 * Validates the authorization code and exchanges it for tokens.
 * Establishes an HTTP session and sends back an `HttpOnly` session cookie (`JSESSIONID`).
-* Issues a `302 Redirect` to `http://localhost:3000/dashboard-page`.
+* Issues a `302 Redirect` to `http://localhost:5000/dashboard-page`.
 
 
 5. **Failure Case:** If login fails, the Gateway intercepts the error and returns a structured `401 Unauthorized` JSON payload rather than unhandled exception pages.
@@ -100,7 +100,7 @@ Browser              React SPA (:3000)                DropdownUser              
 
 ```
 
-1. **Initial Load:** The user directly opens `http://localhost:3000/dashboard-page`. The application renders the `LandingLayout` containing the public header and `Dashboard`.
+1. **Initial Load:** The user directly opens `http://localhost:5000/dashboard-page`. The application renders the `LandingLayout` containing the public header and `Dashboard`.
 2. **Triggering Health Check:** When the user clicks **Login**, `DropdownUser` sets its state to `isLoading = true` and invokes `checkBackendHealth()`:
 ```typescript
 await restApi.get('/api/v1/user', { timeout: 3000 });
@@ -143,7 +143,7 @@ Browser                 React SPA                 AuthContext               ssoA
 
 ```
 
-1. **Mounting:** The user opens `http://localhost:3000/dashboard-page`.
+1. **Mounting:** The user opens `http://localhost:5000/dashboard-page`.
 2. **Context Evaluation:** `Dashboard` calls `useAuth()`. Because no user is logged in, `auth.userProfile` is `undefined`.
 3. **UI Conditioning:**
 * **`Dashboard.tsx`**: Evaluates `isAuthenticated = false`. It renders public search, metrics cards, and recently added questions, while hiding restricted features like *Ask AI*, *Import*, *Export*, and *My Projects*.
@@ -297,7 +297,7 @@ window.location.href = apiServerUrl + '/logout';
 ```
 
 
-4. **Invalidation:** The Gateway receives the `/logout` request, invalidates the HTTP session, clears the session cookie on the browser, and redirects the user back to the public logout landing page: `http://localhost:3000/dashboard-page/logout`.
+4. **Invalidation:** The Gateway receives the `/logout` request, invalidates the HTTP session, clears the session cookie on the browser, and redirects the user back to the public logout landing page: `http://localhost:5000/dashboard-page/logout`.
 5. **Logout Page Rendering:**
 * The router matches `/logout` (or `ROUTE.RE_LOGIN`) and renders the `ReLogin` component inside `PublicLayout`.
 * The page displays a logged-out illustration along with a **Log In Again** button.

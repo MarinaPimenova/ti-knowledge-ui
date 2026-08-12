@@ -188,7 +188,7 @@ The Gateway:
 6. Redirects the browser to:
 
 ```text
-http://localhost:3000/dashboard-page
+http://localhost:5000/dashboard-page
 ```
 
 The React application then displays the authenticated dashboard.
@@ -212,7 +212,7 @@ The important point is that authentication failures should not result in an unha
 The user opens:
 
 ```text
-http://localhost:3000/dashboard-page
+http://localhost:5000/dashboard-page
 ```
 
 The SPA initializes and checks:
@@ -246,7 +246,7 @@ The application should not attempt to render the authenticated dashboard because
 The user opens:
 
 ```text
-http://localhost:3000/dashboard-page
+http://localhost:5000/dashboard-page
 ```
 
 The SPA performs:
@@ -402,7 +402,7 @@ React
 The UI then navigates to:
 
 ```text
-http://localhost:3000/dashboard-page/logout
+http://localhost:5000/dashboard-page/logout
 ```
 
 The logout component can display:
