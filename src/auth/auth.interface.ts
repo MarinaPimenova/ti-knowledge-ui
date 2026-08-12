@@ -14,7 +14,8 @@ export interface Error0 {
 }
 
 export interface AuthContextType {
-    userProfile: User | undefined | null;
+    userProfile: User | undefined;
     onLogin: () => void;
     onLogout: (callback: VoidFunction) => void;
+    isLoading?: boolean;
 }

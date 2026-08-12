@@ -1,10 +1,12 @@
 import React from 'react';
 import { Alert } from 'antd';
-import Logo from './gemini-svg.svg?react';
+import { Link } from 'react-router-dom'; // 1. Import Link
+import Logo from './ti-logo.svg?react';
 import { type User } from '../../auth/auth.interface';
 import { useAuth } from '../../hooks/use-auth';
 import { DropdownUser } from '../user';
 import { useNetworkStore } from '../../store/network/network.store';
+import { ROUTE } from '../../router/router.enum'; // 2. Import ROUTE
 import './header.scss';
 
 export interface HeaderProps {
@@ -35,12 +37,13 @@ export const Header: React.FC<HeaderProps> = ({ isAuthenticated, user }) => {
             )}
 
             <header className="app-header">
-                <div className="app-header__brand">
+                {/* 3. Wrap brand in Link */}
+                <Link to={ROUTE.ROOT} className="app-header__brand">
                     <div className="app-header__logo">
                         <Logo className="app-header__logo-svg" aria-label="TI Logo" />
                     </div>
                     <span className="app-header__title">TI Knowledge Platform</span>
-                </div>
+                </Link>
 
                 <div className="app-header__actions">
                     <DropdownUser isAuthenticated={isUserAuth} user={currentUser} />

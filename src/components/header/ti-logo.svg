@@ -1,43 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 180 64"
-     role="img"
-     aria-labelledby="ti-logo-title ti-logo-desc">
-  <title id="ti-logo-title">TI</title>
-  <desc id="ti-logo-desc">TI logo with circular motion mark</desc>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 64" role="img" aria-label="TI Logo">
   <defs>
     <linearGradient id="ti-blue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0078D4"/>
-      <stop offset="1" stop-color="#0067B8"/>
+      <stop offset="0%" stop-color="#0078D4"/>
+      <stop offset="100%" stop-color="#0067B8"/>
     </linearGradient>
   </defs>
 
-  <!-- Circular motion mark -->
-  <g transform="translate(0 0)">
-    <path d="M10.5 43.5A25 25 0 1 1 51.5 20"
-          fill="none"
-          stroke="#062B63"
-          stroke-width="5.2"
-          stroke-linecap="round"/>
-    <path d="M52.2 20.8A25 25 0 0 1 18.2 53"
-          fill="none"
-          stroke="url(#ti-blue)"
-          stroke-width="5.2"
-          stroke-linecap="round"/>
+  <!-- Circular Motion Mark -->
+  <g transform="translate(4, 2)">
+    <circle cx="28" cy="28" r="26" fill="none" stroke="#0078D4" stroke-width="4" opacity="0.15" />
+    <path d="M 28,2 A 26,26 0 0,1 54,28" fill="none" stroke="url(#ti-blue)" stroke-width="4" stroke-linecap="round" />
 
-    <!-- TI monogram -->
-    <path d="M18 20h25l-2.2 6.2h-8.1L28 45h-7.2l4.7-18.8h-9.7z"
-          fill="#062B63"/>
-    <path d="M36.8 26.2h7.2L39.3 45h-7.2z"
-          fill="url(#ti-blue)"/>
+    <!-- TI Monogram -->
+    <!-- 'T' -->
+    <path d="M 12 18 H 32 M 22 18 V 38" stroke="#062B63" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <!-- 'I' -->
+    <path d="M 38 18 V 38" stroke="url(#ti-blue)" stroke-width="4.5" stroke-linecap="round" fill="none"/>
   </g>
 
   <!-- Wordmark -->
-  <text x="72"
-        y="42"
-        fill="#062B63"
-        font-family="Inter, Segoe UI, Arial, sans-serif"
-        font-size="30"
-        font-weight="700"
-        letter-spacing="0.5">TI</text>
+  <text x="72" y="39" fill="#062B63" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="700" letter-spacing="1">TI</text>
 </svg>

@@ -1,61 +1,52 @@
-import axios from 'axios';
+
 import type {ApiResponse} from '../services/api.interface';
+import {landingPageApi} from "../services/axios.config.ts";
 
 const apiServerUrl = getServerUrl('ORIGINAL');
 
 const redirectId = '?redirectId=knowledge-url';
 
-const config = {
+/*const config = {
     withCredentials: true,
     url: `${apiServerUrl}/api/v1/user${redirectId}`,
     method: 'GET',
     headers: {
         'content-type': 'application/json',
     },
-};
+};*/
 
 type userApiCallback = (data: ApiResponse) => any;
 
 export const ssoAuthProvider = {
-
     getUserProfile: function (callback: userApiCallback): void {
         let data: ApiResponse;
-        let response: any;
 
         (async () => {
             try {
-                response = await axios(config);
-                data = {data: response.data, error: null};
-            } catch (error) {
-                // Network Error - when session is expired
+                // Pass skipAuthRedirect: true so 401 errors won't force a route change to /relogin
+                const response = await landingPageApi.get(`${apiServerUrl}/api/v1/user${redirectId}`, {
+                    headers: { 'content-type': 'application/json' },
+                    skipAuthRedirect: true, // <--- Custom flag
+                } as any);
+
+                data = { data: response.data, error: null };
+            } catch (error: any) {
                 let errorMessage = 'Unknown error';
-                // @ts-ignore
-                if (error !== undefined && error.message === 'Network Error') {
-                    // @ts-ignore
+                if (error?.message === 'Network Error') {
                     errorMessage = error.message;
-                } else {
-                    // @ts-ignore
-                    errorMessage = `Error: ${error.code}. Status: ${error.response?.status}`;
+                } else if (error?.response) {
+                    errorMessage = `Error: ${error.code || 'ERR_BAD_REQUEST'}. Status: ${error.response.status}`;
                 }
-                data = {data: undefined, error: {message: errorMessage}};
-                // @ts-ignore
-                if (error !== undefined && (error.message === 'Network Error')) {
-                    resetToDashboard(); //reset();
-                }
-                // @ts-ignore
-                if (error !== undefined && (error.response?.status === 401 || error.response?.status === 403)) {
-                    login();
-                }
+                data = { data: undefined, error: { message: errorMessage } };
             }
         })()
             .catch((reason) => {
-                data = {data: undefined, error: {message: reason! || 'Unknown error'}};
+                data = { data: undefined, error: { message: reason || 'Unknown error' } };
             })
             .finally(() => {
                 callback(data);
             });
     },
-
 };
 
 export function getCookieValue(cname: string): string {
@@ -93,11 +84,6 @@ export function getServerUrl(cname: string): string {
 
 export function reset() {
     window.location.href = apiServerUrl + '/logout';
-}
-
-export function resetToDashboard() {
-    const frontendOrigin = `${window.location.protocol}//${window.location.host}`; // e.g. http://localhost:3000
-    window.location.href = `${frontendOrigin}/dashboard-page`;
 }
 
 export function refresh(event: React.MouseEvent<HTMLElement>) {

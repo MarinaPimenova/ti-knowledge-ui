@@ -1,4 +1,4 @@
-Yes. Given the database model and the planned evolution of the platform, I would make the landing page a **Knowledge Dashboard**, rather than simply a menu of CRUD operations.
+# **Knowledge Dashboard**
 
 The main goal should be: **after login, the user immediately sees useful knowledge and can quickly find or manage it.**
 
@@ -16,7 +16,6 @@ The main goal should be: **after login, the user immediately sees useful knowled
 │  │ 🔍 Search questions and short answers...                      │  │
 │  └───────────────────────────────────────────────────────────────┘  │
 │                                                                     │
-│   💬 Ask AI    ⬆ Import    ⬇ Export    New Question                 │
 │                                                                     │
 │  ┌────────────────┐ ┌────────────────┐ ┌────────────────────────┐   │
 │  │    Projects    │ │ Questions      │ │ Knowledge Base         │   │
@@ -43,7 +42,7 @@ The main goal should be: **after login, the user immediately sees useful knowled
 
 ## Recommended landing-page concept after log-in
 
-I would structure it like this:
+structure it like this:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -104,7 +103,7 @@ I would structure it like this:
 
 ---
 
-# 2. Main sections I would recommend
+# 2. Main sections 
 
 ### A. Header
 
@@ -124,13 +123,11 @@ Settings
 Logout
 ```
 
-I would **not** put too many actions in the header.
-
 ---
 
 # 3. Main search — the most important element
 
-I would make search the dominant element on the page.
+make search the dominant element on the page.
 
 Something like:
 
@@ -204,13 +201,13 @@ This means the UI does not need to change significantly when AI is introduced.
 
 # 4. Quick Actions
 
-Immediately below search I would put four/five primary actions:
+Immediately below search - put four/five primary actions:
 
 ```text
 [ Ask AI ] [ Import ] [ Export ] [ New Question ] [ New Project ]
 ```
 
-However, I would visually distinguish available and future functionality.
+However, visually distinguish available and future functionality.
 
 For example:
 
@@ -220,7 +217,7 @@ For example:
 
 [ + Question ]   coming soon
 [ + Project ]    coming soon
-[ 🤖 Ask AI ]    coming soon
+[ Ask AI ]    coming soon
 ```
 
 This is better than hiding future functionality because it communicates the platform's roadmap.
@@ -229,7 +226,7 @@ This is better than hiding future functionality because it communicates the plat
 
 # 5. Summary cards
 
-I strongly recommend having three or four small cards.
+three or four small cards.
 
 ### My Projects
 
@@ -336,8 +333,6 @@ Project
 
 # 7. Recently Added Questions
 
-I think this is more valuable than simply displaying "all questions".
-
 For example:
 
 ```text
@@ -409,7 +404,7 @@ PostgreSQL            12
 Liquibase              8
 ```
 
-You can make each item clickable.
+!!! make each item clickable.
 
 For example:
 
@@ -468,7 +463,7 @@ This could be particularly useful for interview preparation.
 
 # 10. Import / Export
 
-Since these are already part of the planned platform, I would give them prominent quick actions.
+Since these are already part of the planned platform, - give them prominent quick actions.
 
 ### Import
 
@@ -528,7 +523,7 @@ rather than blocking the page.
 
 # 11. AI Chatbot
 
-I would already reserve a prominent position for it even though it is not implemented yet.
+reserve a prominent position for it even though it is not implemented yet.
 
 For example:
 
@@ -581,7 +576,7 @@ That fits very naturally with your `resource` model.
 
 # 12. Suggested overall information architecture
 
-I would eventually structure the application around these primary areas:
+eventually structure the application around these primary areas:
 
 ```text
 TI Knowledge Platform
@@ -612,9 +607,9 @@ But **not all of these need to be enabled initially**.
 
 ---
 
-# 13. What I would show in the first version
+# 13. What show in the first version
 
-For the current training project, I would keep the landing page relatively focused:
+For the current training project, keep the landing page relatively focused:
 
 ```text
                  TI KNOWLEDGE PLATFORM
@@ -664,13 +659,13 @@ For the current training project, I would keep the landing page relatively focus
 
 ---
 
-## My main recommendation
+## main recommendation
 
-I would avoid making the landing page primarily:
+avoid making the landing page primarily:
 
 > **"Here are all the things you can do."**
 
-Instead make it:
+Instead of make it:
 
 > **"Here is your knowledge, and here is the fastest way to find what you need."**
 
@@ -678,7 +673,8 @@ That leads naturally to this priority:
 
 **1. Search → 2. Recent/useful knowledge → 3. Projects → 4. Quick actions → 5. Statistics → 6. Administration**
 
-And importantly, this design doesn't need to be redesigned when you introduce the AI chatbot. The existing search experience can evolve from:
+And importantly, this design doesn't need to be redesigned when you introduce the AI chatbot. 
+The existing search experience can evolve from:
 
 ```text
 Keyword Search

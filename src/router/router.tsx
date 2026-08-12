@@ -17,13 +17,19 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Fallback from '../error/fallback';
 import type { ErrorInfo } from 'react';
 import {ProjectCreate} from "../project/project-create.tsx";
+import {Spin} from "antd";
 
 // Guard component for protected routes
 const ProtectedRoute = () => {
     const auth = useAuth();
+    if (auth?.isLoading) {
+        return <Spin size="large" />; // Wait until session check completes
+    }
+
     if (isNull(auth?.userProfile)) {
         return <Navigate to={ROUTE.RE_LOGIN} replace />;
     }
+
     return <Outlet />;
 };
 
