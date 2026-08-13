@@ -12,6 +12,7 @@ export const landingPageApi = axios.create({
     baseURL: apiServerUrl,
     headers: {
         'Content-Type': 'application/json',
+        'X-Request-Id': crypto.randomUUID(),
     },
 });
 
@@ -19,6 +20,7 @@ export const restApi = axios.create({
     baseURL: apiServerUrl,
     headers: {
         'Content-Type': 'application/json',
+        'X-Request-Id': crypto.randomUUID(),
     },
 });
 
