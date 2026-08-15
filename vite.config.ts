@@ -23,7 +23,7 @@ export default defineConfig({
     build: {
         minify: true,
         sourcemap: false,
-        target: 'modules',
+        target: 'es2015',
     },
     css: {
         preprocessorOptions: {
