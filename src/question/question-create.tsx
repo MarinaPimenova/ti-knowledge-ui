@@ -1,34 +1,12 @@
+// noinspection XmlDeprecatedElement
+
 import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    Card,
-    Form,
-    Input,
-    Select,
-    Space,
-    message
-} from 'antd';
-import {
-    MinusCircleOutlined,
-    PlusOutlined
-} from '@ant-design/icons';
+import { Button, Card, Form, Input, Select, Space, message } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-
 import { ROUTE } from '../router/router.enum';
-import {
-    createNewQuestion,
-    getProjects,
-    getTags,
-    getQuestionLevels
-} from '../services/api.service';
-
-import type {
-    CreateQuestionRequest,
-    ResourceRequest,
-    TagDto,
-    ProjectDto,
-    QuestionLevelDto
-} from './question.payload.interface';
+import {createNewQuestion, getProjects, getTags, getQuestionLevels } from '../services/api.service';
+import type {CreateQuestionRequest, ResourceRequest, TagDto, ProjectDto, QuestionLevelDto} from './question.payload.interface';
 
 import './question.scss';
 
@@ -69,7 +47,6 @@ export const QuestionCreate: React.FC = () => {
         const loadOptions = async () => {
             try {
                 setLoadingOptions(true);
-
                 const [tagsResponse, projectsResponse, levelsResponse] =
                     await Promise.all([
                         getTags(),
@@ -87,7 +64,6 @@ export const QuestionCreate: React.FC = () => {
                 setLoadingOptions(false);
             }
         };
-
         loadOptions();
     }, []);
 
@@ -113,9 +89,7 @@ export const QuestionCreate: React.FC = () => {
 
         try {
             setSubmitting(true);
-
             await createNewQuestion(payload);
-
             message.success('Question created successfully');
             navigate(ROUTE.QUESTIONS);
         } catch (error) {
@@ -128,10 +102,7 @@ export const QuestionCreate: React.FC = () => {
 
     return (
         <div className="question-create">
-            <Card
-                title="Create Question"
-                className="question-create__card"
-            >
+            <Card title="Create Question" className="question-create__card">
                 <Form<QuestionFormValues>
                     form={form}
                     layout="vertical"
@@ -142,9 +113,7 @@ export const QuestionCreate: React.FC = () => {
                         resources: []
                     }}
                 >
-                    <Form.Item
-                        name="question"
-                        label="Question"
+                    <Form.Item name="question" label="Question"
                         rules={[
                             {
                                 required: true,
@@ -156,9 +125,7 @@ export const QuestionCreate: React.FC = () => {
                         <Input placeholder="Enter the question" />
                     </Form.Item>
 
-                    <Form.Item
-                        name="shortAnswer"
-                        label="Short Answer"
+                    <Form.Item name="shortAnswer" label="Short Answer"
                         rules={[
                             {
                                 required: true,
@@ -173,20 +140,14 @@ export const QuestionCreate: React.FC = () => {
                         />
                     </Form.Item>
 
-                    <Form.Item
-                        name="detailedAnswer"
-                        label="Detailed Answer"
-                    >
+                    <Form.Item name="detailedAnswer" label="Detailed Answer">
                         <TextArea
                             rows={6}
                             placeholder="Provide a detailed explanation"
                         />
                     </Form.Item>
 
-                    <Form.Item
-                        name="questionLevelId"
-                        label="Difficulty"
-                    >
+                    <Form.Item name="questionLevelId" label="Difficulty">
                         <Select
                             allowClear
                             loading={loadingOptions}
@@ -194,13 +155,10 @@ export const QuestionCreate: React.FC = () => {
                             options={questionLevels.map(level => ({
                                 label: level.difficultyCode,
                                 value: level.questionLevelId
-                            }))}
-                        />
+                            }))}/>
                     </Form.Item>
 
-                    <Form.Item
-                        name="tagIds"
-                        label="Tags"
+                    <Form.Item name="tagIds" label="Tags"
                         rules={[
                             {
                                 validator: (_, value) =>
@@ -222,14 +180,12 @@ export const QuestionCreate: React.FC = () => {
                                 label: tag.tag,
                                 value: tag.id
                             }))}
-                            optionFilterProp="label"
-                        />
+                            optionFilterProp="label"/>
                     </Form.Item>
 
                     <Form.Item
                         name="projectIds"
-                        label="Projects"
-                    >
+                        label="Projects">
                         <Select
                             mode="multiple"
                             allowClear
@@ -239,42 +195,32 @@ export const QuestionCreate: React.FC = () => {
                                 label: project.name,
                                 value: project.id
                             }))}
-                            optionFilterProp="label"
-                        />
+                            optionFilterProp="label"/>
                     </Form.Item>
 
                     <Card
                         size="small"
                         title="Code Example"
-                        className="question-create__section"
-                    >
+                        className="question-create__section">
                         <Form.Item
                             name="language"
-                            label="Language"
-                        >
+                            label="Language">
                             <Select
                                 allowClear
                                 placeholder="Select language"
-                                options={languageOptions}
-                            />
+                                options={languageOptions}/>
                         </Form.Item>
 
                         <Form.Item
                             name="sourceCode"
-                            label="Source Code"
-                        >
+                            label="Source Code">
                             <TextArea
                                 rows={10}
-                                placeholder="Enter source code"
-                            />
+                                placeholder="Enter source code"/>
                         </Form.Item>
                     </Card>
 
-                    <Card
-                        size="small"
-                        title="Resources"
-                        className="question-create__section"
-                    >
+                    <Card size="small" title="Resources" className="question-create__section">
                         <Form.List name="resources">
                             {(fields, { add, remove }) => (
                                 <>
@@ -282,57 +228,33 @@ export const QuestionCreate: React.FC = () => {
                                         <Space
                                             key={field.key}
                                             align="start"
-                                            className="question-create__resource-row"
-                                        >
+                                            className="question-create__resource-row">
                                             <Form.Item
                                                 {...field}
                                                 name={[field.name, 'url']}
                                                 rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            'URL is required'
-                                                    },
-                                                    {
-                                                        type: 'url',
-                                                        message:
-                                                            'Enter a valid URL'
-                                                    }
+                                                    {required: true, message: 'URL is required'},
+                                                    {type: 'url', message: 'Enter a valid URL'}
                                                 ]}
                                             >
-                                                <Input
-                                                    placeholder="Resource URL"
-                                                    className="question-create__resource-url"
-                                                />
+                                                <Input placeholder="Resource URL" className="question-create__resource-url"/>
                                             </Form.Item>
 
                                             <Form.Item
                                                 {...field}
-                                                name={[
-                                                    field.name,
-                                                    'description'
-                                                ]}
+                                                name={[field.name, 'description']}
                                                 rules={[
-                                                    {
-                                                        required: true,
-                                                        whitespace: true,
-                                                        message:
-                                                            'Description is required'
-                                                    }
+                                                    {required: true, whitespace: true, message: 'Description is required'}
                                                 ]}
                                             >
-                                                <Input
-                                                    placeholder="Description"
-                                                    className="question-create__resource-description"
-                                                />
+                                                <Input placeholder="Description" className="question-create__resource-description"/>
                                             </Form.Item>
 
                                             <MinusCircleOutlined
                                                 className="question-create__remove-resource"
                                                 onClick={() =>
                                                     remove(field.name)
-                                                }
-                                            />
+                                                }/>
                                         </Space>
                                     ))}
 
@@ -349,8 +271,7 @@ export const QuestionCreate: React.FC = () => {
                     </Card>
 
                     <div className="question-create__actions">
-                        <Button
-                            disabled={submitting}
+                        <Button disabled={submitting}
                             onClick={() => navigate(-1)}
                         >
                             Cancel

@@ -1,3 +1,5 @@
+// noinspection XmlDeprecatedElement
+
 import React from 'react';
 import { Button, Card, Descriptions, Space, Tag, Typography } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -36,9 +38,9 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
                     </Descriptions.Item>
                 )}
 
-                {question.difficultyCode && (
+                {question.questionLevel.difficultyCode && (
                     <Descriptions.Item label="Difficulty">
-                        <Tag color="blue">{question.difficultyCode}</Tag>
+                        <Tag color="blue">{question.questionLevel.difficultyCode}</Tag>
                     </Descriptions.Item>
                 )}
 
@@ -69,15 +71,8 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
                             className="question-view__resources"
                         >
                             {question.resources.map(resource => (
-                                <div
-                                    key={resource.id ?? resource.url}
-                                    className="question-view__resource"
-                                >
-                                    <a
-                                        href={resource.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
+                                <div key={resource.id ?? resource.url} className="question-view__resource">
+                                    <a href={resource.url} target="_blank" rel="noopener noreferrer">
                                         {resource.url}
                                     </a>
 
